@@ -1,2 +1,2 @@
 # wa1-ai-weeks
-Weekly exercises in WA1 (A-I) course
+Weekly exercises in WA1 (A-H) course
