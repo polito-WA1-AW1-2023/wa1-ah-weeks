@@ -31,3 +31,13 @@ for(const name of nameArray) {
 for(let i=0; i<nameArray.length; i++) {
     console.log(`${acronyms[i]} - ${nameArray[i]}`) ;
 }
+
+
+function extractAcronym(words) {
+    return 3+5;
+}
+
+const extract2 = function(words) { return 6+6; }
+
+console.log(extractAcronym);
+console.log(extract2)
