@@ -1,0 +1,6 @@
+h1 { color: red; }
+body {color: blue; font-family: sans-serif;}
+main { background-color: aliceblue;}
+#questionText { font-weight: bolder;}
+.responder { font-style: italic; }
+#questionText, #authorName {display:inline}
