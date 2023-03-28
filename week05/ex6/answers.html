@@ -16,6 +16,10 @@
     <meta name="description" content="Q&A">
     <meta name="author" content="wa1-iz-2024">
 
+    <script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script defer src="qa.js"></script>
+    <script defer src="script.js"></script>
+
     <title>HeapOverrun</title>
   </head>
 
@@ -32,10 +36,10 @@
       <section>
         <div class="row">
           <p class="col-6"><strong>Question #1:</strong></p>
-          <p class="col-6 text-end">Asked by <span class="badge rounded-pill text-bg-secondary text-end">Luigi De Russis</span></p>
+          <p class="col-6 text-end">Asked by <span class="badge rounded-pill text-bg-secondary text-end" id="questionauthor"></span></p>
         </div>
         <div class="row">
-          <p class="lead">Is JavaScript better than Python?</p>
+          <p class="lead"></p>
         </div>
       </section>
 
@@ -45,7 +49,7 @@
       
       <div class="row">
         <div class="col-lg-10 mx-auto">
-          <table class="table">
+          <table class="table" id="answerstable">
             <thead class="table-light">
               <tr>
                 <th scope="col">Date</th>
@@ -56,7 +60,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <!-- <tr>
                 <td>15/02/2023</td>
                 <td>Yes</td>
                 <td>Luca Mannella</td>
@@ -76,15 +80,17 @@
                 <td>Mario Rossi</td>
                 <td>0</td>
                 <td><button class="btn btn-info">VOTE</button></td>
-              </tr>
-              <tr>
-                <td><input class="form-control" type="date"></td>
-                <td><input class="form-control" type="text"></td>
-                <td><input class="form-control" type="text"></td>
-                <td><input class="form-control" type="text" size="3"></td>
-                <td><button class="btn btn-success">ADD</button></td>
-              </tr>
+              </tr> -->
             </tbody>
+            <tfoot>
+              <tr>
+                <td><input class="form-control" type="date" name="date"></td>
+                <td><input class="form-control" type="text" name="text"></td>
+                <td><input class="form-control" type="text" name="author"></td>
+                <td></td>
+                <td><button class="btn btn-success" id="addbutton">ADD</button></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
