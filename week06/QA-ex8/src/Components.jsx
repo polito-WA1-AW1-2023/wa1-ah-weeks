@@ -3,11 +3,12 @@ import { Badge, Button, Col, Form, Row, Table } from "react-bootstrap";
 function QuestionWithAnswers(props) {
 
     const q = props.question;
+    const answers = props.answers ;
 
     if (q) {
         return (<>
             <QuestionDetails author={q.author} text={q.text} />
-            <AnswerDetails answers={q.answers} />
+            <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} />
         </>)
 
     } else {
@@ -44,7 +45,7 @@ function AnswerDetails(props) {
                 </tr>
             </thead>
             <tbody>
-                {props.answers.map(a => <AnswerRow key={a.id} answer={a} />)}
+                {props.answers.map(a => <AnswerRow key={a.id} answer={a} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} />)}
             </tbody>
             <tfoot>
                 <NewAnswerForm />
@@ -59,7 +60,8 @@ function AnswerRow(props) {
         <td>{props.answer.text}</td>
         <td>{props.answer.author}</td>
         <td>{props.answer.score}</td>
-        <td><Button variant='secondary'>VOTE</Button></td>
+        <td><Button variant='secondary' onClick={()=>{props.upVoteAnswer(props.answer.id)}}>VOTE</Button>{' '}
+        <Button variant='warning' onClick={()=>{props.deleteAnswer(props.answer.id)}}>DELETE</Button></td>
     </tr>
 }
 

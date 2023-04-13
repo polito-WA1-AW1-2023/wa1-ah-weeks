@@ -1,0 +1,19 @@
+App
+    State: question
+    State: answers
+
+    QuestionWithAnswers
+        props.question
+        props.answers
+
+        QuestionDetails
+            props.author, props.text
+
+        AnswerDetails
+            props.answers (array)
+
+            AnswerRow
+                props.answer (one!, an object)
+
+            NewAnswerForm
+                nothing
