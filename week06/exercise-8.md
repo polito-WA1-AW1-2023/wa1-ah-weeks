@@ -8,15 +8,16 @@ Define where to put the state in the app and how many state variables you need, 
 
 Use the 'fake' set of questions and answers to initialize the state. Update the existing components accordingly.
 
+## Implement the "delete" function
+
+Add a button, besides each answer, to delete that answer from the list.
+
+Use the defined state and decide where to put the function to delete the element.
+
 ## Implement the "vote up" function
 
 Make the "vote up" function of each answer work! By clicking on the button associated with an answer, the information about the answer's score must be increased by 1.
 
 Use the defined state and decide where to put the function to increase the score.
 
-## Add a new answer (I part)
-
-Include a form on the question page to add a new answer. The form will appear below the answers' table and use _controlled input components_. 
-
-For the moment, the insertion of a new answer in the table is not required, yet.
 
