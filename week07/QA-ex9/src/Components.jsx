@@ -1,15 +1,40 @@
 import { useState } from "react";
 import { Badge, Button, Col, Form, Row, Table } from "react-bootstrap";
+import { AddOrEditAnswer } from "./AnswerForm";
 
 function QuestionWithAnswers(props) {
 
+    const [mode, setMode] = useState('view');
+
+    const [editedAnswer, setEditedAnswer] = useState(false) ;
+
+    function handleCancel() {
+        setMode('view');
+    }
+
+    function handleAdd(date, text, author) {
+        props.addAnswer(date, text, author);
+        setMode('view');
+    }
+
+    function handleSave() {
+        props.editAnswer() ;
+    }
+
+    function handleEdit(id) {
+        setEditedAnswer(props.answers.filter((a)=>(a.id===id))[0])
+        setMode('edit') ;
+    }
     const q = props.question;
     const answers = props.answers;
 
     if (q) {
         return (<>
             <QuestionDetails author={q.author} text={q.text} />
-            <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} />
+            <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} handleEdit={handleEdit}/>
+            {mode === 'edit'  && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleSave={handleSave} initialValue={editedAnswer}/>}
+            {mode === 'add'  && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleAdd={handleAdd} />}
+{mode === 'view' && <Button variant='success' onClick={() => setMode('add')}>ADD</Button>}
         </>)
 
     } else {
@@ -34,31 +59,38 @@ function QuestionDetails(props) {
 
 function AnswerDetails(props) {
 
-    const [sorted, setSorted] = useState('');
+    const [sorted, setSorted] = useState('none');
 
-    function updateSortState() {
-        setSorted((old) => {
-            if (old === '')
-                return 'up'
-            else if (old === 'up')
-                return 'down'
-            else if (old === 'down')
-                return ''
-        })
+    // LOCAL COMPUTATION
+    let sortedAnswers = [...props.answers]
+    let sortIcon = '-'
+    if (sorted === 'up') {
+        sortedAnswers.sort((a, b) => (a.score - b.score));
+        sortIcon = '^'
+    } else if (sorted === 'down') {
+        sortedAnswers.sort((a, b) => -(a.score - b.score));
+        sortIcon = 'v'
     }
 
-    let sortSymbol = '';
-    switch (sorted) {
-        case '':
-            sortSymbol = '=';
-            break;
-        case 'up':
-            sortSymbol = '^';
-            break;
-        case 'down':
-            sortSymbol = 'v';
-            break;
+
+    function sortByScore() {
+        if (sorted === 'none')
+            setSorted('up')
+        else if (sorted === 'up')
+            setSorted('down')
+        else if (sorted === 'down')
+            setSorted('none')
     }
+
+    // DERIVED STATE - GENERALLY A BAD IDEA (1-impossible to TRACK changes; 2-duplication of information)
+    // const [sortedAnswers, setSortedAnswers] = useState(props.answers);
+    // function sortByScore() {
+    //     setSortedAnswers((old) => {
+    //         let temp = [...old]
+    //         temp.sort((a, b) => -(a.score - b.score))
+    //         return temp
+    //     })
+    // }
 
 
     return <>
@@ -69,16 +101,13 @@ function AnswerDetails(props) {
                     <th scope="col">Date</th>
                     <th scope="col">Text</th>
                     <th scope="col">Author</th>
-                    <th scope="col" onClick={updateSortState}>Score {sortSymbol}</th>
+                    <th scope="col" onClick={sortByScore}>Score {sortIcon}</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {props.answers.map(a => <AnswerRow key={a.id} answer={a} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} />)}
+                {sortedAnswers.map(a => <AnswerRow key={a.id} answer={a} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} handleEdit={props.handleEdit} />)}
             </tbody>
-            <tfoot>
-                <NewAnswerForm />
-            </tfoot>
         </Table>
     </>
 }
@@ -90,34 +119,11 @@ function AnswerRow(props) {
         <td>{props.answer.author}</td>
         <td>{props.answer.score}</td>
         <td><Button variant='secondary' onClick={() => { props.upVoteAnswer(props.answer.id) }}>VOTE</Button>{' '}
-            <Button variant='warning' onClick={() => { props.deleteAnswer(props.answer.id) }}>DELETE</Button></td>
+            <Button variant='warning' onClick={() => { props.deleteAnswer(props.answer.id) }}>DELETE</Button>{' '}
+            <Button variant='success' onClick={()=>{props.handleEdit(props.answer.id)}}>EDIT</Button>
+            </td>
     </tr>
 }
 
-function NewAnswerForm(props) {
-    return <tr>
-        <td><Form.Group controlId="answerDate">
-            <Form.Label className='fw-light'>Date</Form.Label>
-            <Form.Control type="date" name="date" placeholder="Enter date" />
-        </Form.Group></td>
-
-        <td><Form.Group controlId="answerText">
-            <Form.Label className='fw-light'>Answer text</Form.Label>
-            <Form.Control type="text" name="text" placeholder="Enter Answer" />
-        </Form.Group></td>
-
-        <td><Form.Group controlId="answerAuthor">
-            <Form.Label className='fw-light'>Author</Form.Label>
-            <Form.Control type="text" name="author" placeholder="Author's name" />
-        </Form.Group></td>
-
-        <td></td>
-        <td><Form.Group controlId="addButton">
-            <Form.Label className='fw-light'>&nbsp;</Form.Label><br />
-            <Button variant='success' id="addbutton">ADD</Button>
-        </Form.Group>
-        </td>
-    </tr>;
-}
 
 export { QuestionWithAnswers };

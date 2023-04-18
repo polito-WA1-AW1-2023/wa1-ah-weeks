@@ -4,11 +4,13 @@ import { Container, Navbar } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
+import { TestInput } from "./TestInput";
 
 // FAKE DATA
 const myquestion = new Question(1, 'Is JavaScript better than Python?', 'Luigi De Russis', '2023-01-01');
 myquestion.add(new Answer(1, 'Yes', 'Luca Mannella', -10, '2023-02-15'));
 myquestion.add(new Answer(2, 'Both have their pros and cons', 'Mario Rossi', 0, '2023-03-04'));
+myquestion.add(new Answer(3, 'Hiiii', 'Dumb boy', -5, '2023-03-04'));
 
 
 function App() {
@@ -36,7 +38,14 @@ function App() {
       const newAns = new Answer(newId, text, author, 0, date);
       return [...oldAnswers, newAns];
     });
+  }
 
+  const editAnswer = (id, date, text, author) => {
+    setAnswers((oldAnswers) => (
+      oldAnswers.map((ans) => (
+        ans.id === id ? new Answer(ans.id, text, author, ans.score, date) : ans
+      ))
+    ));
   }
 
   // alternative: group all callback functions in one object, to minimize the number of props to pass
@@ -56,9 +65,11 @@ function App() {
     <main>
       <Container>
         <QuestionWithAnswers question={question} answers={answers}
-          deleteAnswer={deleteAnswer} upVoteAnswer={upVoteAnswer} />
+          deleteAnswer={deleteAnswer} upVoteAnswer={upVoteAnswer} 
+          addAnswer={addAnswer} editAnswer={editAnswer} />
       </Container>
     </main>
+    {/* <TestInput/> */}
   </>
 
 }
