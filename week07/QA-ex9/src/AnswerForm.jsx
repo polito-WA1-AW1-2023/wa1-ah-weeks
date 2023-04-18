@@ -23,7 +23,11 @@ function AddOrEditAnswer(props) {
     }
 
     function handleSave() {
-        // TODO!!!!
+        if(text!=='' && author!=='') {
+            props.handleSave(props.initialValue.id, date, text, author);
+        } else {
+            setErr('Some data are missing') ;
+        }
     }
 
     return <div>

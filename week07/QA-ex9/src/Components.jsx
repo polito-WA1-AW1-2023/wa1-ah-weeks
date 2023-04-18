@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Badge, Button, Col, Form, Row, Table } from "react-bootstrap";
+import { Badge, Button, Col, Row, Table } from "react-bootstrap";
 import { AddOrEditAnswer } from "./AnswerForm";
 
 function QuestionWithAnswers(props) {
 
     const [mode, setMode] = useState('view');
 
-    const [editedAnswer, setEditedAnswer] = useState(false) ;
+    const [editedAnswer, setEditedAnswer] = useState(false);
 
     function handleCancel() {
         setMode('view');
@@ -17,13 +17,14 @@ function QuestionWithAnswers(props) {
         setMode('view');
     }
 
-    function handleSave() {
-        props.editAnswer() ;
+    function handleSave(id, date, text, author) {
+        props.editAnswer(id, date, text, author);
+        setMode('view');
     }
 
     function handleEdit(id) {
-        setEditedAnswer(props.answers.filter((a)=>(a.id===id))[0])
-        setMode('edit') ;
+        setEditedAnswer(props.answers.filter((a) => (a.id === id))[0])
+        setMode('edit');
     }
     const q = props.question;
     const answers = props.answers;
@@ -31,10 +32,10 @@ function QuestionWithAnswers(props) {
     if (q) {
         return (<>
             <QuestionDetails author={q.author} text={q.text} />
-            <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} handleEdit={handleEdit}/>
-            {mode === 'edit'  && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleSave={handleSave} initialValue={editedAnswer}/>}
-            {mode === 'add'  && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleAdd={handleAdd} />}
-{mode === 'view' && <Button variant='success' onClick={() => setMode('add')}>ADD</Button>}
+            <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} handleEdit={handleEdit} />
+            {mode === 'edit' && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleSave={handleSave} initialValue={editedAnswer} />}
+            {mode === 'add' && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleAdd={handleAdd} />}
+            {mode === 'view' && <Button variant='success' onClick={() => setMode('add')}>ADD</Button>}
         </>)
 
     } else {
@@ -120,8 +121,8 @@ function AnswerRow(props) {
         <td>{props.answer.score}</td>
         <td><Button variant='secondary' onClick={() => { props.upVoteAnswer(props.answer.id) }}>VOTE</Button>{' '}
             <Button variant='warning' onClick={() => { props.deleteAnswer(props.answer.id) }}>DELETE</Button>{' '}
-            <Button variant='success' onClick={()=>{props.handleEdit(props.answer.id)}}>EDIT</Button>
-            </td>
+            <Button variant='success' onClick={() => { props.handleEdit(props.answer.id) }}>EDIT</Button>
+        </td>
     </tr>
 }
 

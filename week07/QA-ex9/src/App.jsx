@@ -4,7 +4,6 @@ import { Container, Navbar } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
-import { TestInput } from "./TestInput";
 
 // FAKE DATA
 const myquestion = new Question(1, 'Is JavaScript better than Python?', 'Luigi De Russis', '2023-01-01');
