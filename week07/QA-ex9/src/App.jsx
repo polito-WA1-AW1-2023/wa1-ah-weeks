@@ -22,7 +22,6 @@ function App() {
   }
 
   const upVoteAnswer = (id) => {
-    console.log('Upvoting answer ' + id);
     setAnswers((oldAnswers) => (
       oldAnswers.map((ans) => (
         ans.id === id ? new Answer(ans.id, ans.text, ans.author, ans.score + 1, ans.date) : ans
@@ -31,7 +30,6 @@ function App() {
   }
 
   const addAnswer = (date, text, author) => {
-    // TODO: test/debug
     setAnswers((oldAnswers) => {
       const newId = Math.max(...oldAnswers.map(a => a.id)) + 1;
       const newAns = new Answer(newId, text, author, 0, date);
@@ -46,9 +44,6 @@ function App() {
       ))
     ));
   }
-
-  // alternative: group all callback functions in one object, to minimize the number of props to pass
-  const actions = { deleteAnswer: deleteAnswer, upVoteAnswer: upVoteAnswer }
 
   return <>
     <header>
@@ -68,7 +63,6 @@ function App() {
           addAnswer={addAnswer} editAnswer={editAnswer} />
       </Container>
     </main>
-    {/* <TestInput/> */}
   </>
 
 }
