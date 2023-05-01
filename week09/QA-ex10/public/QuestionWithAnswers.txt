@@ -1,0 +1,42 @@
+App
+    State: question
+    State: answers
+
+    QuestionWithAnswers
+        props.question
+        props.answers
+        State: mode (view/add/edit)
+
+        QuestionDetails
+            props.author, props.text
+
+        AnswerDetails
+            props.answers (array)
+            State: sorted
+
+            AnswerRow
+                props.answer (one!, an object)
+
+        AddOrEditAnswer
+
+        
+
+mode='view' (default)
+[ Question info ]
+[ Table of answers ]
+    [Buttons in each row "EDIT"] -> mode='edit'
+[ Button "ADD" ] -> mode='add'
+
+'add'
+[ Question info ]
+??[ Table of answers ]??
+[ Empty FORM for new answer ]
+    [ Button ADD ] -> save answer (into App state), mode='view'
+    [ Button CANCEL ] -> mode='view'
+
+'edit'
+[ Question info ]
+??[ Table of answers ]??
+[ Pre-filled FORM for editing an answer ]
+    [ Button SAVE ] -> save modification (into App state), mode='view'
+    [ Button CANCEL ] -> mode='view'
