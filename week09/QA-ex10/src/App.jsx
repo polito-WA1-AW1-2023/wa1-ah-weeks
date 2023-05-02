@@ -5,6 +5,13 @@ import { Container, Navbar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 
+import { BrowserRouter, Outlet, Route, Routes }  from 'react-router-dom' ;
+import { PageNotFound } from "./PageNotFound";
+import { QuestionsList } from "./QuestionsList";
+import { AnswersList } from "./AnswersList";
+import { AddAnswer } from "./AddAnswer";
+
+
 // FAKE DATA
 const myquestion = new Question(1, 'Is JavaScript better than Python?', 'Luigi De Russis', '2023-01-01');
 myquestion.add(new Answer(1, 'Yes', 'Luca Mannella', -10, '2023-02-15'));
@@ -13,6 +20,41 @@ myquestion.add(new Answer(3, 'Hiiii', 'Dumb boy', -5, '2023-03-04'));
 
 
 function App() {
+
+  return <BrowserRouter>
+        <Routes>
+          <Route element={<Layout/>}>
+            <Route index element={<QuestionsList/>} />
+            <Route path='/answers/:questionId' element={<AnswersList/>} />
+            <Route path='/addAnswer/:questionId' element={<AddAnswer/>} />
+            <Route path='*' element={<PageNotFound/>}/>
+          </Route>
+        </Routes>
+  </BrowserRouter> ;
+
+}
+
+function Layout() {
+  return <>
+    <header>
+  <Navbar sticky="top" variant='dark' bg="primary" expand="lg" className='mb-3'>
+    <Container>
+      <Navbar.Brand>HeapOverrun - Question 1</Navbar.Brand>
+      <Navbar.Text>
+        Signed in as: Tom
+      </Navbar.Text>
+    </Container>
+  </Navbar>
+</header>
+<main>
+  <Container>
+    <Outlet/>
+  </Container>
+</main>
+</>
+}
+
+function OldApp() {
 
   const [question, setQuestion] = useState({ id: myquestion.id, text: myquestion.text, author: myquestion.author, date: myquestion.date });
   const [answers, setAnswers] = useState([...myquestion.answers]);
