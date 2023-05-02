@@ -33,7 +33,7 @@ function QuestionWithAnswers(props) {
         return (<>
             <QuestionDetails author={q.author} text={q.text} />
             <AnswerDetails answers={answers} deleteAnswer={props.deleteAnswer} upVoteAnswer={props.upVoteAnswer} handleEdit={handleEdit} />
-            {mode === 'edit' && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleSave={handleSave} initialValue={editedAnswer} />}
+            {mode === 'edit' && <AddOrEditAnswer key={editedAnswer.id} mode={mode} handleCancel={handleCancel} handleSave={handleSave} initialValue={editedAnswer} />}
             {mode === 'add' && <AddOrEditAnswer mode={mode} handleCancel={handleCancel} handleAdd={handleAdd} />}
             {mode === 'view' && <Button variant='success' onClick={() => setMode('add')}>ADD</Button>}
         </>)
