@@ -1,6 +1,16 @@
+import { useContext } from "react";
+import LanguageContext from "./LanguageContext";
+
 function Message() {
 
-    return <p>Message in English</p>
+    const lang = useContext(LanguageContext) ;
+
+    if(lang=='EN') {
+        return <p>Message in English</p>
+    } else {
+        return <p>Messaggio in Italiano</p>
+    }
+    
 }
 
 export { Message };
