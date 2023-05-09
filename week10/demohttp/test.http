@@ -1,0 +1,16 @@
+GET http://localhost:3000/ HTTP/1.1
+
+###
+
+GET http://localhost:3000/abc HTTP/1.1
+
+###
+
+POST http://localhost:3000/add/7 HTTP/1.1
+Content-Type: application/json
+
+{ "id": 3, "name": "abc" }
+
+###
+
+GET http://localhost:3000/info HTTP/1.1

@@ -1,0 +1,12 @@
+GET http://localhost:3000/api/questions
+
+###
+
+POST http://localhost:3000/api/questions
+Content-Type: application/json
+
+{ 
+    "text": "new question",
+    "author": "nobody",
+    "date": "2023-05-09"
+}
