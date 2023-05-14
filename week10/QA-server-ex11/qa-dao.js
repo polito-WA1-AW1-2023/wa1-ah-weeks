@@ -67,17 +67,77 @@ function listAnswers(questionId) {
 
 function createAnswer(questionId, answer) {
     // NOTE: answer.id is ignored because the database will generate an auto-incremental ID
+    // NOTE: answer.score is ignored and forced to ZERO
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO ANSWER(text, author,date,score,questionId) VALUES (?,?,?,?,?)' ;
-        db.run(sql, [answer.text, answer.author, answer.date.toISOString(), answer.score, questionId], (err)=>{
-            if(err) reject(err)
-            else resolve(true) ;
-        }) ;
-    }) ;
+        const sql = 'INSERT INTO ANSWER(text, author, date, score, questionId) VALUES (?,?,?,0,?)';
+        db.run(sql, [answer.text, answer.author, answer.date.toISOString(), questionId], (err) => {
+            if (err) reject(err)
+            else resolve(true);
+        });
+    });
 }
 
-exports.listQuestions = listQuestions ;
-exports.readQuestion = readQuestion ;
-exports.createQuestion = createQuestion ;
-exports.listAnswers = listAnswers ;
-exports.createAnswer = createAnswer ;
+function deleteAnswer(answerId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM answer WHERE id=?';
+        db.run(sql, [answerId], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    })
+}
+
+function updateAnswer(answerId, answer) {
+    return new Promise((resolve, reject) => {
+        const sql = `UPDATE answer
+        SET text=?, author=?, date=?, score=0
+        WHERE id=?` ;
+
+        db.run(sql, [answer.text, answer.author, answer.date.toISOString(), answerId], (err)=>{
+            if(err) {
+                reject(err) ;
+            } else {
+                resolve(true) ;
+            }
+        }) ;
+    })
+}
+
+exports.upVoteAnswer = function(answerId) {
+    return new Promise((resolve, reject)=>{
+        const sql = `UPDATE answer SET score=score+1 WHERE id=?` ;
+        
+        db.run(sql, [answerId], (err)=>{
+            if(err) {
+                reject(err);
+            } else {
+                resolve(true) ;
+            }
+        }) ;
+    });
+}
+
+exports.readAnswer = function(answerId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM answer WHERE id=?';
+        db.all(sql, [answerId], (err, rows) => {
+            if (err)
+                reject(err)
+            else {
+                const answers = rows.map((a) => new Answer(a.id, a.text, a.author, a.score, a.date, a.questionId));
+                resolve(answers[0]);
+            }
+        });
+    });
+}
+
+exports.listQuestions = listQuestions;
+exports.readQuestion = readQuestion;
+exports.createQuestion = createQuestion;
+exports.listAnswers = listAnswers;
+exports.createAnswer = createAnswer;
+exports.deleteAnswer = deleteAnswer;
+exports.updateAnswer = updateAnswer ;
