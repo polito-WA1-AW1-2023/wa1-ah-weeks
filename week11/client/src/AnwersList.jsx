@@ -1,15 +1,23 @@
 import { Button } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Badge, Table } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { deleteAnswer, listAnswers } from "./API";
 
 function AnswersList(props) {
     const { idQuestion } = useParams();
     const navigate = useNavigate();
 
+    const [answers, setAnswers] = useState([]) ;
+
+    useEffect(()=>{
+        listAnswers(idQuestion).then(list=>{
+            setAnswers(list);
+        })
+    }, [idQuestion]);
+
+
     const myQuestion = props.questions.filter((q)=>(q.id == idQuestion))[0];
-    const myAnswers = props.answers.filter((a)=>(a.questionId==idQuestion)) ;
-    // console.log(myAnswers)
 
     const handleAdd = () => {
         navigate(`/addAnswer/${idQuestion}`);
@@ -20,7 +28,8 @@ function AnswersList(props) {
     }
 
     const handleDelete = (id) => {
-        props.deleteAnswer(id);
+        deleteAnswer(id) ;
+        // IN SOME WAY, WE MUST UPDATE THE LOCAL STATE, TOO... (coming soon)
     }
 
     const handleEdit = (id) => {
@@ -33,7 +42,7 @@ function AnswersList(props) {
 
     return <div>
        <QuestionDetails question={myQuestion}/>
-       <AnswerDetails answers={myAnswers} deleteAnswer={handleDelete} upVoteAnswer={handleVote} handleEdit={handleEdit} />
+       <AnswerDetails answers={answers} deleteAnswer={handleDelete} upVoteAnswer={handleVote} handleEdit={handleEdit} />
 
         <p><Button onClick={handleAdd}>ADD</Button> <Button onClick={handleClose}>CLOSE</Button></p>
     </div>
