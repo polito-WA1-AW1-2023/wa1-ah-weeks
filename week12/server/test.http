@@ -1,0 +1,65 @@
+@APIURL=http://localhost:3000/api
+
+// GET LIST OF QUESTIONS
+GET {{APIURL}}/questions
+
+###
+
+// ADD A NEW QUESTION
+POST {{APIURL}}/questions
+Content-Type: application/json
+
+{ 
+    "text": "who won Eurovision?",
+    "author": "music fan",
+    "date": "2023-05-15"
+}
+
+###
+
+// GET LIST OF ANSWERS TO ONE QUESTION
+GET {{APIURL}}/questions/1/answers
+
+###
+
+// GET LIST OF ANSWERS TO ONE QUESTION
+GET {{APIURL}}/questions/2/answers
+
+###
+
+// ADD A NEW ANSWER (TO A QUESTION)
+POST {{APIURL}}/questions/2/answers
+Content-Type: application/json
+
+{
+    "text": "Newly added answer",
+    "author": "Testing user", 
+    "date": "2023-05-14"
+}
+
+###
+
+// DELETE AN ANSWER
+DELETE {{APIURL}}/answers/7
+`
+###
+
+// UPDATE THE CONTENT OF AN EXISTING ANSWER
+PUT {{APIURL}}/answers/5
+Content-Type: application/json
+
+{
+    "text": "Updated answer text",
+    "author": "Other user", 
+    "date": "2023-05-15"
+}
+
+###
+
+// UPVOTE AN ANSWER
+POST {{APIURL}}/answers/5/vote
+Content-Type: application/json
+
+{
+    "vote": "up"
+}

@@ -1,5 +1,6 @@
 import { Container, Navbar } from 'react-bootstrap';
 import { BrowserRouter, Link, Outlet, Route, Routes, useParams } from 'react-router-dom';
+import { Answer, Question } from "./qa";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from "react";
