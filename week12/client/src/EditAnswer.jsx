@@ -1,6 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AddOrEditAnswer } from "./AnswerForm";
 import { Answer } from "./qa";
+import { updateAnswer } from "./API";
 
 function EditAnswer(props) {
     const navigate = useNavigate() ;
@@ -20,8 +21,8 @@ function EditAnswer(props) {
         navigate(`/answers/${idQuestion}`)
     }
 
-    const handleSave = (id, date, text, author) => {
-        // call API!!
+    const handleSave = async (id, date, text, author) => {
+        await updateAnswer(date,text,author,id) ;
         navigate(`/answers/${idQuestion}`)
     }
 

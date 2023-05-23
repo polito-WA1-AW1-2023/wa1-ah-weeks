@@ -1,6 +1,5 @@
-import { Button } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Badge, Table } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Row, Col, Badge, Table, Alert } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { deleteAnswer, listAnswers, upVote } from "./API";
 
@@ -10,6 +9,7 @@ function AnswersList(props) {
 
     const [answers, setAnswers] = useState([]);
     const [waiting, setWaiting] = useState(true);
+    const [errorMsg, setErrorMsg] = useState('') ;
 
     useEffect(() => {
         listAnswers(idQuestion).then(list => {
@@ -17,6 +17,13 @@ function AnswersList(props) {
             setWaiting(false);
         })
     }, [idQuestion]);
+
+    // auto-delete the error message after 2 seconds
+    useEffect(()=>{
+        if(errorMsg) {
+            setTimeout(()=>{setErrorMsg('')}, 2000);
+        }
+    }, [errorMsg]);
 
 
     const myQuestion = props.questions.filter((q) => (q.id == idQuestion))[0];
@@ -52,28 +59,28 @@ function AnswersList(props) {
             setAnswers((old)=>old.map(a => (a.id===id ? {...a, score:a.score+1} : a )))
 
             // call the API for increasing the score
-            const result = await upVote(id)
+            await upVote(id)
 
 
+        } catch (error) {
+            // console.log(error);
+            setErrorMsg(error.message);
+            setWaiting(false);
+        } finally {
             // update the value shown in the component
             const list = await listAnswers(idQuestion);
             setAnswers(list);
             setWaiting(false);
 
-        } catch (error) {
-            console.log(error);
-            // TODO: put some error message in the page (add a state with err msg)
-            setWaiting(false);
-
         }
-
     }
 
     return <div>
         <QuestionDetails question={myQuestion} />
+        {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
         <AnswerDetails answers={answers} deleteAnswer={handleDelete} upVoteAnswer={handleVote} handleEdit={handleEdit} waiting={waiting}/>
 
-        <p><Button onClick={handleAdd}>ADD</Button> <Button onClick={handleClose}>CLOSE</Button></p>
+        <p><Button disabled={waiting} onClick={handleAdd}>ADD</Button> <Button disabled={waiting} onClick={handleClose}>CLOSE</Button></p>
     </div>
 }
 
@@ -105,7 +112,6 @@ function AnswerDetails(props) {
         sortedAnswers.sort((a, b) => -(a.score - b.score));
         sortIcon = '↓'
     }
-
 
     function sortByScore() {
         if (sorted === 'none')

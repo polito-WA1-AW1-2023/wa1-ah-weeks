@@ -16,7 +16,7 @@ const app = express();
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(cors());
-app.use(delay) ; // add an extra latency (REMOVE ME!)
+// app.use(delay) ; // add an extra latency (REMOVE ME!)
 
 app.post('/api/questions', (req, res) => {
     // console.log(req.body)
