@@ -1,6 +1,7 @@
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddOrEditAnswer } from "./AnswerForm";
+import { addAnswer } from "./API";
 
 function AddAnswer(props) {
 
@@ -11,8 +12,8 @@ function AddAnswer(props) {
         navigate(`/answers/${idQuestion}`);
     }
 
-    const handleAdd = (date, text, author) => {
-        props.addAnswer(date, text, author, idQuestion) ;
+    const handleAdd = async (date, text, author) => {
+        await addAnswer(date, text, author, idQuestion) ;
         navigate(`/answers/${idQuestion}`);
     }
 

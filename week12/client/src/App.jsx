@@ -24,6 +24,9 @@ function App() {
     })
   }, []);
 
+  // if(questions.length==0)
+  // return "Loading..."
+
   return <BrowserRouter>
     <Routes>
       <Route element={<MainLayout />}>

@@ -8,10 +8,15 @@ const cors = require('cors');
 const dao = require('./qa-dao');
 const { Question, Answer } = require('./qa');
 
+function delay(req, res, next) {
+    setTimeout(()=>{next()}, 1000) ;
+}
+
 const app = express();
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(cors());
+app.use(delay) ; // add an extra latency (REMOVE ME!)
 
 app.post('/api/questions', (req, res) => {
     // console.log(req.body)
