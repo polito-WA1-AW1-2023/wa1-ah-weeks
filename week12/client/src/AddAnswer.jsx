@@ -13,7 +13,8 @@ function AddAnswer(props) {
     }
 
     const handleAdd = async (date, text, author) => {
-        await addAnswer(date, text, author, idQuestion) ;
+        const newId = await addAnswer(date, text, author, idQuestion) ;
+        // console.log('ADDED: '+newId)
         navigate(`/answers/${idQuestion}`);
     }
 

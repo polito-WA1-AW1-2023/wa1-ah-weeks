@@ -70,9 +70,10 @@ function createAnswer(questionId, answer) {
     // NOTE: answer.score is ignored and forced to ZERO
     return new Promise((resolve, reject) => {
         const sql = 'INSERT INTO ANSWER(text, author, date, score, questionId) VALUES (?,?,?,0,?)';
-        db.run(sql, [answer.text, answer.author, answer.date.toISOString(), questionId], (err) => {
+        db.run(sql, [answer.text, answer.author, answer.date.toISOString(), questionId], function(err)  {
             if (err) reject(err)
-            else resolve(true);
+            else resolve(this.lastID); // If successful, returns the new 'id' just generated
+            // NOTE: to be able tu use `this.lasdID`, the callback must be a function(){} and not an arrow ()=>{}
         });
     });
 }

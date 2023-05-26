@@ -15,10 +15,10 @@ async function listQuestions() {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error("Application error: " + message);
+            throw new Error(response.statusText +" "+ message);
         }
     } catch (error) {
-        throw new Error("Network error: " + error.message)
+        throw new Error(error.message, {cause: error})
     }
 }
 
@@ -36,10 +36,10 @@ async function listAnswers(questionId) {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error("Application error: " + message);
+            throw new Error(response.statusText +" "+ message);
         }
     } catch (error) {
-        throw new Error("Network error: " + error.message)
+        throw new Error(error.message, {cause: error}) ;
     }
 }
 
@@ -59,13 +59,18 @@ async function deleteAnswer(answerId) {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error(message);
+            throw new Error(response.statusText +" "+ message);
         }
     } catch (error) {
         throw new Error(error.message, {cause:error})
     }
 }
 
+/**
+ * Increases the score of the specific answer
+ * @param {int} answerId 
+ * @returns true if ok
+ */
 async function upVote(answerId) {
     try {
         const response = await fetch(APIURL + `/answers/${answerId}/vote`, {
@@ -79,16 +84,24 @@ async function upVote(answerId) {
         if (response.ok) {
             return true;
         } else {
-            const errorMsg = await response.text();
-            throw new Error(errorMsg)
+            const message = await response.text();
+            throw new Error(response.statusText +" "+ message);
         }
     
-    } catch (err) {
-        throw new Error(err.message, {cause:err});
+    } catch (error) {
+        throw new Error(error.message, {cause:error});
     }
 
 }
 
+/**
+ * Add a new answer to an existing question. The score is set to 0 and the ID will be auto-generated.
+ * @param {string} date 
+ * @param {string} text 
+ * @param {string} author 
+ * @param {int} idQuestion 
+ * @returns {int} the ID of the new question
+ */
 async function addAnswer(date, text, author, idQuestion) {
     try {
         const response = await fetch(APIURL + `/questions/${idQuestion}/answers`, {
@@ -103,13 +116,14 @@ async function addAnswer(date, text, author, idQuestion) {
             })
         });
         if (response.ok) {
-            return true;
+            const id = Number(await response.text());
+            return id;
         } else {
             const message = await response.text();
-            throw new Error(message);
+            throw new Error(response.statusText +" "+ message);
         }
-    } catch (err) {
-        throw new Error(err.message, {cause: err});
+    } catch (error) {
+        throw new Error(error.message, {cause:error});
     }
 }
 
@@ -131,12 +145,11 @@ async function updateAnswer(date, text, author, idAnswer) {
             return true;
         } else {
             const message = response.text();
-            throw new Error("Application error: " + message);
+            throw new Error(response.statusText +" "+ message);
         }
-    } catch (err) {
-        throw new Error("Network error: " + err.message);
+    } catch (error) {
+        throw new Error(error.message, {cause:error});
     }
-
 }
 
 

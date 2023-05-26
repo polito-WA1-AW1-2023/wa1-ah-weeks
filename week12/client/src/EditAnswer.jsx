@@ -8,14 +8,12 @@ function EditAnswer(props) {
     const { idQuestion, idAnswer } = useParams() ;
 
     const location = useLocation() ;
-    console.log(location) ;
 
     let editedAnswer = undefined ;
     if(location.state) {
         editedAnswer = location.state ;
         editedAnswer = new Answer(editedAnswer.id, editedAnswer.text, editedAnswer.author, editedAnswer.score, editedAnswer.date) ;
     }
-    console.log(editedAnswer) ;
 
     const handleCancel = () => {
         navigate(`/answers/${idQuestion}`)

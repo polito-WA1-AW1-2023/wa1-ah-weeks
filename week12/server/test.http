@@ -28,7 +28,7 @@ GET {{APIURL}}/questions/2/answers
 ###
 
 // ADD A NEW ANSWER (TO A QUESTION)
-POST {{APIURL}}/questions/2/answers
+POST {{APIURL}}/questions/4/answers
 Content-Type: application/json
 
 {
