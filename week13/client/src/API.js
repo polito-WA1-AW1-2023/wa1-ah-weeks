@@ -15,10 +15,10 @@ async function listQuestions() {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
     } catch (error) {
-        throw new Error(error.message, {cause: error})
+        throw new Error(error.message, { cause: error })
     }
 }
 
@@ -36,10 +36,10 @@ async function listAnswers(questionId) {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
     } catch (error) {
-        throw new Error(error.message, {cause: error}) ;
+        throw new Error(error.message, { cause: error });
     }
 }
 
@@ -59,10 +59,10 @@ async function deleteAnswer(answerId) {
         } else {
             // if response is not OK
             const message = await response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
     } catch (error) {
-        throw new Error(error.message, {cause:error})
+        throw new Error(error.message, { cause: error })
     }
 }
 
@@ -85,11 +85,11 @@ async function upVote(answerId) {
             return true;
         } else {
             const message = await response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
-    
+
     } catch (error) {
-        throw new Error(error.message, {cause:error});
+        throw new Error(error.message, { cause: error });
     }
 
 }
@@ -120,10 +120,10 @@ async function addAnswer(date, text, author, idQuestion) {
             return id;
         } else {
             const message = await response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
     } catch (error) {
-        throw new Error(error.message, {cause:error});
+        throw new Error(error.message, { cause: error });
     }
 }
 
@@ -145,12 +145,55 @@ async function updateAnswer(date, text, author, idAnswer) {
             return true;
         } else {
             const message = response.text();
-            throw new Error(response.statusText +" "+ message);
+            throw new Error(response.statusText + " " + message);
         }
     } catch (error) {
-        throw new Error(error.message, {cause:error});
+        throw new Error(error.message, { cause: error });
     }
 }
 
 
-export { listQuestions, listAnswers, deleteAnswer, upVote, addAnswer, updateAnswer };
+// LOGIN-LOGOUT APIs
+
+async function checkLogin(username, password) {
+    try {
+        const response = await fetch(APIURL + '/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+        if (response.ok) {
+            return await response.json();
+        } else {
+            const message = await response.text();
+            throw new Error(response.statusText + " " + message);
+        }
+    } catch (error) {
+        throw new Error(error.message, { cause: error });
+    }
+}
+
+async function doLogout() {
+    try {
+        const response = await fetch(APIURL + '/logout', {
+            method: 'POST',
+        });
+        if (response.ok) {
+            return true ;
+        } else {
+            const message = await response.text();
+            throw new Error(response.statusText + " " + message);
+        }
+    } catch (error) {
+        throw new Error(error.message, { cause: error });
+    }
+}
+
+
+
+export { listQuestions, listAnswers, deleteAnswer, upVote, addAnswer, updateAnswer, checkLogin, doLogout };

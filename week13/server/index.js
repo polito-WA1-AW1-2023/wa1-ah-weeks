@@ -41,7 +41,7 @@ passport.use(new LocalStrategy((username, password, callback) => {
     userdao.getUser(username, password).then((user) => {
         callback(null, user);
     }).catch((err) => {
-        callback(err)
+        callback(null, false, err)
     });
 }));
 
@@ -133,6 +133,7 @@ app.post('/api/questions', (req, res) => {
     dao.createQuestion(question).then((result) => {
         res.end();
     }).catch((error) => {
+        res.set('Content-Type: text/plain')
         res.status(500).send(error.message);
     });
 });
