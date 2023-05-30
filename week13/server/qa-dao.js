@@ -5,9 +5,8 @@ const { Question, Answer } = require('./qa');
 const dayjs = require('dayjs');
 const sqlite = require('sqlite3');
 
-const db = new sqlite.Database('questions.sqlite', (err) => {
-    if (err) throw err;
-});
+const db = require('./db') ;
+
 
 function readQuestion(id) {
     return new Promise((resolve, reject) => {

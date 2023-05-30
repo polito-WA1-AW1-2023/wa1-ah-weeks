@@ -63,3 +63,15 @@ Content-Type: application/json
 {
     "vote": "up"
 }
+
+
+### 
+
+// Test login
+POST {{APIURL}}/login
+Content-Type: application/json
+
+{
+    "username": "new@polito.it",
+    "password": "password"
+}
