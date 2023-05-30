@@ -1,13 +1,7 @@
-// const db = require('./db');
-const sqlite = require('sqlite3');
-
-const db = new sqlite.Database('questions.sqlite', (err) => {
-    if (err) throw err;
-});
-
-
-
 const crypto = require('crypto');
+
+const db = require('./db');
+
 
 /**
  * Query the database and check whether the usernamen exists and the password
