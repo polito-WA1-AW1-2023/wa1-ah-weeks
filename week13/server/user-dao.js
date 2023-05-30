@@ -12,8 +12,8 @@ const db = require('./db');
  * @throws the Promise rejects if any errors are encountered
  */
 function getUser(username, password) {
-    const sql = 'SELECT * FROM user WHERE email=?';
     return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM user WHERE email=?';
         db.get(sql, [username], (err, row) => {
             if (err) { // database error
                 reject(err);

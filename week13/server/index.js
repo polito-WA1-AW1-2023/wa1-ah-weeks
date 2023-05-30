@@ -3,61 +3,87 @@
 const PORT = 3000;
 
 const express = require('express');
+
+// middleware modules
 const morgan = require('morgan');
 const cors = require('cors');
-const dao = require('./qa-dao');
-const userdao = require('./user-dao');
-
-const { Question, Answer } = require('./qa');
-
 const session = require('express-session');
 
-const passport = require('passport') ;
-const LocalStrategy = require('passport-local') ;
+// passport
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
-passport.serializeUser( (user, callback)=>{
-    callback(null, {id: user.id, email: user.email, name: user.name}) ;
-} ) ;
-passport.deserializeUser( (user, callback)=> {
-    callback(null, user) ;
-} ) ;
+// import Dao and Data Model
+const dao = require('./qa-dao');
+const userdao = require('./user-dao');
+const { Question, Answer } = require('./qa');
 
+// Create App
+const app = express();
+
+// Configure and register middlewares
+app.use(morgan('combined'));
+app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
+
+// see: https://expressjs.com/en/resources/middleware/session.html
+app.use(session({
+    secret: 'xxxxyyyyzzz', resave: false, saveUninitialized: false
+}));
+
+// Configure and register Passport
+
+passport.use(new LocalStrategy((username, password, callback) => {
+    // verify function
+    userdao.getUser(username, password).then((user) => {
+        callback(null, user);
+    }).catch((err) => {
+        callback(err)
+    });
+}));
+
+passport.serializeUser((user, callback) => {
+    callback(null, { id: user.id, email: user.email, name: user.name });
+});
+passport.deserializeUser((user, callback) => {
+    callback(null, user);
+});
+
+app.use(passport.authenticate('session'));
+
+// Custom middleware: artificial delay
 function delay(req, res, next) {
     setTimeout(() => { next() }, 1000);
 }
-
-const app = express();
-app.use(morgan('combined'));
-app.use(express.json());
-app.use(cors());
 // app.use(delay) ; // if you want to add an extra latency (ONLY FOR DEBUG!!)
 
-app.use(session({secret: 'xxxxyyyyzzz'}));
 
-passport.use(new LocalStrategy( (username, password, callback)=>{
-    userdao.getUser(username, password).then((user)=>{
-        callback(null, user) ;
-    }).catch((err)=>{
-        callback(err)
-    }) ;
-} )) ;
-app.use(passport.authenticate('session')) ;
-
-
+// Custom middleware: check login status
 const isLogged = (req, res, next) => {
-    if(req.isAuthenticated()) {
-        next() ;
+    if (req.isAuthenticated()) {
+        next();
     } else {
-        res.status(500).send("NOT AUTHENTICATED - GO AWAY") ;
+        res.status(500).send("NOT AUTHENTICATED - GO AWAY");
     }
 }
 
+/******* LOGIN - LOGOUT OPERATIONS *******/
+
 // POST /api/login
-app.post('/api/login', passport.authenticate('local'), (req, res)=>{
-    res.json(req.user) ;
-}) ;
+app.post('/api/login', passport.authenticate('local'), (req, res) => {
+    res.json(req.user);
+});
+
+// POST /api/logout
+app.post('/api/logout', (req, res) => {
+    req.logout(()=>{res.end()});
+})
 
 // POST /api/testlogin
+/* Used only to illustrate how the 'real' /api/login works
 app.post('/api/testlogin', async (req,res) => {
     const username = req.body.username ;
     const password = req.body.password ;
@@ -67,19 +93,10 @@ app.post('/api/testlogin', async (req,res) => {
     }catch(error) {
         res.status(500).send(error.message) ;
     }
-
 }) ;
+*/
 
-// POST /api/questions
-// Create a new question
-app.post('/api/questions', (req, res) => {
-    const question = new Question(null, req.body.text, req.body.author, req.body.date);
-    dao.createQuestion(question).then((result) => {
-        res.end();
-    }).catch((error) => {
-        res.status(500).send(error.message);
-    });
-});
+/******* PUBLIC APIs (NO AUTHENTICATION) *******/
 
 // GET /api/questions
 // List all questions
@@ -104,6 +121,24 @@ app.get('/api/questions/:questionId/answers', async (req, res) => {
     }
 });
 
+
+/******* PRIVATE APIs (REQUIRE AUTHENTICATION) *******/
+
+app.use(isLogged);  // middleware installed for the APIs below this line
+
+// POST /api/questions
+// Create a new question
+app.post('/api/questions', (req, res) => {
+    const question = new Question(null, req.body.text, req.body.author, req.body.date);
+    dao.createQuestion(question).then((result) => {
+        res.end();
+    }).catch((error) => {
+        res.status(500).send(error.message);
+    });
+});
+
+
+
 // POST /api/questions/:questionId/answers
 // Create a new answer to a specific question
 // Returns the ID of the new answer (simple text in the body)
@@ -115,7 +150,7 @@ app.post('/api/questions/:questionId/answers', async (req, res) => {
 
     try {
         let id = await dao.createAnswer(questionId, answer);
-        console.log(id) ;
+        console.log(id);
         res.send(String(id));
     } catch (error) {
         res.status(500).send(error.message);
@@ -135,7 +170,6 @@ app.delete('/api/answers/:answerId', async (req, res) => {
     }
 });
 
-app.use(isLogged) ;
 
 // PUT /api/answers/:answerId
 // Replace an existing answer with new values (score is forced to 0, id is unchanged)
@@ -173,6 +207,8 @@ app.post('/api/answers/:answerId/vote', isLogged, async (req, res) => {
     }
 });
 
+
+/******* APPLICATION STARTUP *******/
 
 app.listen(PORT,
     () => { console.log(`Server started on http://localhost:${PORT}/`) });
